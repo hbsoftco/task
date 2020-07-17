@@ -130,7 +130,8 @@ export default {
         task: null,
         description: null,
         parentId: null,
-        userId: null
+        userId: null,
+        status: null
       }
     };
   },
@@ -153,15 +154,24 @@ export default {
       this.doneItems = this.teachers.filter(item => item.status === "Done");
     },
     addTask() {
-      this.ADD_TASK(this.form);
-
-      //   this.form.name = null;
-      //   this.form.description = null;
-      //   this.form.parentId = null;
-      //   this.form.userId = null;
-      //   this.form.status = null;
-
+      this.ADD_TASK({
+        id: this.teachers.length + 1,
+        task: this.form.task,
+        description: this.form.description,
+        parentId: this.form.parentId,
+        status: this.form.status,
+        userId: this.form.userId
+      });
       this.handle();
+      this.resetForm();
+      console.log(this.teachers);
+    },
+    resetForm() {
+      this.form.task = null;
+      this.form.description = null;
+      this.form.parentId = null;
+      this.form.userId = null;
+      this.form.status = null;
     },
     removeTasks(task) {
       this.removeTask(task);

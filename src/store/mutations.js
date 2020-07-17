@@ -6,7 +6,7 @@ export default {
 		state.links.push(link)
 	},
 	ADD_TASK: (state, task) => {
-		console.log('task', task);
+		// console.log('task', task);
 		state.teachers.push(task)
 	},
 	REMOVE_TASK: (state, task) => {
