@@ -13,67 +13,78 @@
           type="text"
           placeholder="کار"
           class="form-control col-md-4"
-          v-model="form.کار"
+          v-model="form.task"
           style="margin-bottom: 20px;"
         />
         <input
           type="text"
           placeholder="توضیحات"
           class="form-control col-md-4"
-          v-model="form.توضیحات"
+          v-model="form.description"
           style="margin-bottom: 20px;"
         />
         <input
           type="number"
           placeholder="آیدی پدر"
           class="form-control col-md-4"
-          v-model="form.آیدی__پدر"
+          v-model="form.parentId"
           style="margin-bottom: 20px;"
         />
         <input
           type="text"
           placeholder="آیدی کاربر"
           class="form-control col-md-4"
-          v-model="form.آیدی__کاربر"
+          v-model="form.userId"
           style="margin-bottom: 20px;"
         />
         <div class="form-group col-md-4">
-          <select class="form-control" v-model="form.وضعیت">
+          <select class="form-control" v-model="form.status">
             <option>Todo</option>
             <option>Doing</option>
             <option>Done</option>
           </select>
         </div>
         <button class="btn btn-success">اضافه کردن تسک</button>
-      </form><br><br>
-      <!-- <table v-for="(item,index) in teachers" :key="index"> -->
-        <!-- <thead class="table table-dark"> -->
-          <!-- <tr>Task</tr> -->
-        <!-- </thead> -->
-        <tbody>
-          <!-- <td>{{ item }}</td> -->
-        </tbody>
-			<!-- <button v-on:click="removeTasks(index)" class="rm btn btn-danger" style="position: absolute;margin-left: 365px;margin-top: 132px;">حذف</button> -->
-		<div>
-		  	<button v-on:click="removeTasks(index)" class="rm btn btn-danger" style="position: absolute;margin-left: 365px;margin-top: 132px;">حذف</button>
-  		</div>
+      </form>
+      <hr />
     </div>
     <div>
       <label>برای انجام</label>
-    <div style="border: 2px dashed red; width: 905px;height: auto; margin-top:10px;">
-    	<b-table striped hover :items="todoItems">
-	</b-table>
-	  	
-    </div>
+      <div style="border: 2px dashed red; width: 905px;height: auto; margin-top:10px;">
+        <b-table striped hover :items="todoItems" :fields="fields">
+          <template v-slot:cell(actions)="row">
+             <button
+              v-on:click="removeTasks(row.item)"
+              class="btn btn-danger"
+            >حذف</button>
+          </template>
+        </b-table>
+      </div>
       <label style="margin-top:10px;">در حال انجام</label>
       <div style="border:2px dashed cyan; width: 905px;height: auto; margin-top:10px;">
-        <b-table striped hover :items="doingItems"></b-table>
+        <b-table striped hover :items="doingItems" :fields="fields">
+          <template v-slot:cell(actions)="row">
+             <button
+              v-on:click="removeTasks(row.item)"
+              class="btn btn-danger"
+            >حذف</button>
+          </template>
+        </b-table>
       </div>
       <label for>تمام</label>
       <div style="border:2px dashed green; width: 905px;height: auto; margin-top:10px;">
-        <b-table striped hover :items="doneItems"></b-table>
+        <b-table striped hover :items="doneItems" :fields="fields">
+          <template v-slot:cell(actions)="row">
+            <button
+              v-on:click="removeTasks(row.item)"
+              class="btn btn-danger"
+            >حذف</button>
+          </template>
+        </b-table>
       </div>
-	  <br><br><br>
+      <br />
+      <br />
+      <br />
     </div>
   </div>
 </template>
@@ -86,12 +97,49 @@ export default {
       doingItems: [],
       doneItems: [],
       todoItems: [],
+      fields: [
+        {
+          label: "کار",
+          key: "task",
+          sortable: true,
+          tdClass: "text-right"
+        },
+        {
+          label: "توضیحات",
+          key: "description",
+          sortable: true,
+          tdClass: "text-right"
+        },
+        {
+          label: "شناسه پدر",
+          key: "parentId",
+          sortable: true,
+          tdClass: "text-center"
+        },
+        {
+          label: "شناسه کاربر",
+          key: "userId",
+          sortable: true,
+          tdClass: "text-center"
+        },
+        {
+          label: "وضعیت",
+          key: "status",
+          sortable: true,
+          tdClass: "text-center"
+        },
+        {
+          label: "عملیات",
+          key: "actions",
+          sortable: false,
+          tdClass: "text-center"
+        }
+      ],
       form: {
-        کار: null,
-        توضیحات: null,
-        آیدی__پدر: null,
-        آیدی__کاربر: null,
-        وضعیت: null
+        task: null,
+        description: null,
+        parentId: null,
+        userId: null
       }
     };
   },
@@ -109,23 +157,27 @@ export default {
     ...mapMutations(["ADD_TASK"]),
     ...mapActions(["removeTask"]),
     handle() {
-      this.todoItems = this.teachers.filter(item => item.وضعیت === "Todo");
-      this.doingItems = this.teachers.filter(item => item.وضعیت === "Doing");
-      this.doneItems = this.teachers.filter(item => item.وضعیت === "Done");
+      this.todoItems = this.teachers.filter(item => item.status === "Todo");
+      this.doingItems = this.teachers.filter(item => item.status === "Doing");
+      this.doneItems = this.teachers.filter(item => item.status === "Done");
+
+      console.log(this.todoItems);
+      console.log(this.doingItems);
+      console.log(this.doneItems);
     },
     async addTask() {
       await this.ADD_TASK(this.form);
-    //   this.form.name = null;
-    //   this.form.description = null;
-    //   this.form.parentId = null;
-    //   this.form.userId = null;
-    //   this.form.status = null;
+      //   this.form.name = null;
+      //   this.form.description = null;
+      //   this.form.parentId = null;
+      //   this.form.userId = null;
+      //   this.form.status = null;
 
       this.handle();
     },
     removeTasks(task) {
-	  this.removeTask(task);
-	  this.handle();
+      this.removeTask(task);
+      this.handle();
     }
   }
 };
