@@ -11,5 +11,12 @@ export default {
 	},
 	REMOVE_TASK: (state, task) => {
 		state.teachers = state.teachers.filter(x => x !== task);
+	},
+	UPDATE_TASK: (state, task) => {
+		let res = state.teachers.filter(x => x.id !== task.id);
+		
+		state.teachers = res;
+		state.teachers.push(task);
+		console.log(res);
 	}
 }

@@ -8,7 +8,7 @@
         crossorigin="anonymous"
       />
       <h1>اضافه کردن کار</h1>
-      <form @submit.prevent="addTask" dir="rtl">
+      <form @submit.prevent="handleForm" dir="rtl">
         <input
           type="text"
           placeholder="کار"
@@ -44,7 +44,7 @@
             <option>Done</option>
           </select>
         </div>
-        <button class="btn btn-success">اضافه کردن تسک</button>
+        <button class="btn btn-success">{{!updateStaus? 'اضافه کردن تسک': 'بروزرسانی'}}</button>
       </form>
       <hr />
     </div>
@@ -53,7 +53,8 @@
       <div style="border: 2px dashed red; width: 905px;height: auto; margin-top:10px;">
         <b-table striped hover :items="todoItems" :fields="fields">
           <template v-slot:cell(actions)="row">
-            <button v-on:click="removeTasks(row.item)" class="btn btn-danger">حذف</button>
+            <button v-on:click="removeTasks(row.item)" class="btn btn-sm btn-danger">حذف</button>
+            <button v-on:click="updateTasks(row.item)" class="btn btn-sm btn-info">اپدیت</button>
           </template>
         </b-table>
       </div>
@@ -61,7 +62,8 @@
       <div style="border:2px dashed cyan; width: 905px;height: auto; margin-top:10px;">
         <b-table striped hover :items="doingItems" :fields="fields">
           <template v-slot:cell(actions)="row">
-            <button v-on:click="removeTasks(row.item)" class="btn btn-danger">حذف</button>
+            <button v-on:click="removeTasks(row.item)" class="btn btn-sm btn-danger">حذف</button>
+            <button v-on:click="updateTasks(row.item)" class="btn btn-sm btn-info">اپدیت</button>
           </template>
         </b-table>
       </div>
@@ -69,7 +71,8 @@
       <div style="border:2px dashed green; width: 905px;height: auto; margin-top:10px;">
         <b-table striped hover :items="doneItems" :fields="fields">
           <template v-slot:cell(actions)="row">
-            <button v-on:click="removeTasks(row.item)" class="btn btn-danger">حذف</button>
+            <button v-on:click="removeTasks(row.item)" class="btn btn-sm btn-danger">حذف</button>
+            <button v-on:click="updateTasks(row.item)" class="btn btn-sm btn-info">اپدیت</button>
           </template>
         </b-table>
       </div>
@@ -127,12 +130,14 @@ export default {
         }
       ],
       form: {
+        id: null,
         task: null,
         description: null,
         parentId: null,
         userId: null,
         status: null
-      }
+      },
+      updateStaus: false
     };
   },
   computed: {
@@ -146,14 +151,44 @@ export default {
     this.handle();
   },
   methods: {
-    ...mapMutations(["ADD_TASK"]),
+    ...mapMutations(["ADD_TASK", "UPDATE_TASK"]),
     ...mapActions(["removeTask"]),
     handle() {
       this.todoItems = this.teachers.filter(item => item.status === "Todo");
       this.doingItems = this.teachers.filter(item => item.status === "Doing");
       this.doneItems = this.teachers.filter(item => item.status === "Done");
     },
+    handleForm() {
+      if (!this.updateStaus) {
+        this.addTask();
+      } else {
+        this.update();
+      }
+    },
+    updateTasks(task) {
+      this.updateStaus = true;
+      this.form.task = task.task;
+      this.form.id = task.id;
+      this.form.description = task.description;
+      this.form.parentId = task.parentId;
+      this.form.status = task.status;
+      this.form.userId = task.userId;
+    },
+    update() {
+      this.UPDATE_TASK({
+        id: this.form.id,
+        task: this.form.task,
+        description: this.form.description,
+        parentId: this.form.parentId,
+        status: this.form.status,
+        userId: this.form.userId
+      });
+      this.updateStaus = false;
+      this.handle();
+      this.resetForm();
+    },
     addTask() {
+      console.log("handle");
       this.ADD_TASK({
         id: this.teachers.length + 1,
         task: this.form.task,
