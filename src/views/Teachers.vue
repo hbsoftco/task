@@ -53,10 +53,7 @@
       <div style="border: 2px dashed red; width: 905px;height: auto; margin-top:10px;">
         <b-table striped hover :items="todoItems" :fields="fields">
           <template v-slot:cell(actions)="row">
-             <button
-              v-on:click="removeTasks(row.item)"
-              class="btn btn-danger"
-            >حذف</button>
+            <button v-on:click="removeTasks(row.item)" class="btn btn-danger">حذف</button>
           </template>
         </b-table>
       </div>
@@ -64,10 +61,7 @@
       <div style="border:2px dashed cyan; width: 905px;height: auto; margin-top:10px;">
         <b-table striped hover :items="doingItems" :fields="fields">
           <template v-slot:cell(actions)="row">
-             <button
-              v-on:click="removeTasks(row.item)"
-              class="btn btn-danger"
-            >حذف</button>
+            <button v-on:click="removeTasks(row.item)" class="btn btn-danger">حذف</button>
           </template>
         </b-table>
       </div>
@@ -75,10 +69,7 @@
       <div style="border:2px dashed green; width: 905px;height: auto; margin-top:10px;">
         <b-table striped hover :items="doneItems" :fields="fields">
           <template v-slot:cell(actions)="row">
-            <button
-              v-on:click="removeTasks(row.item)"
-              class="btn btn-danger"
-            >حذف</button>
+            <button v-on:click="removeTasks(row.item)" class="btn btn-danger">حذف</button>
           </template>
         </b-table>
       </div>
@@ -160,13 +151,10 @@ export default {
       this.todoItems = this.teachers.filter(item => item.status === "Todo");
       this.doingItems = this.teachers.filter(item => item.status === "Doing");
       this.doneItems = this.teachers.filter(item => item.status === "Done");
-
-      console.log(this.todoItems);
-      console.log(this.doingItems);
-      console.log(this.doneItems);
     },
-    async addTask() {
-      await this.ADD_TASK(this.form);
+    addTask() {
+      this.ADD_TASK(this.form);
+
       //   this.form.name = null;
       //   this.form.description = null;
       //   this.form.parentId = null;
